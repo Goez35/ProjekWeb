@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../config/db.php';
 session_start();
-// Ilham kontol
+// Ilham kontol bagus apalagi
 $data = json_decode(file_get_contents('php://input'), true);
 $username = trim($data['username'] ?? '');
 $password = $data['password'] ?? '';
