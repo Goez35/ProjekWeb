@@ -25,8 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION["user"] = [
                     "id" => $row["id"],
                     "username" => $row["username"],
+                    "fullname" => $row["fullname"],
                     "role" => $row["role"]
                 ];
+
                 header("Location: dashboard.php");
                 exit;
             } else {
