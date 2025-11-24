@@ -1,10 +1,6 @@
 <?php
 session_start();
-<<<<<<< HEAD
 require_once "koneksi.php";
-=======
-include "db.php";
->>>>>>> 1f903c49c4281dfb96db43c89c4005fa6a90b262
 
 // jika ada pesan sukses dari register
 $flash = $_SESSION['flash_success'] ?? "";
