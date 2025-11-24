@@ -14,13 +14,17 @@ if (!isset($_SESSION['session_id'])) {
 $session_id = $_SESSION['session_id'];
 
 // ambil data session
-$stmt = $koneksi->prepare("SELECT s.*, u.fullname AS teacher_name 
-                           FROM quiz_sessions s
-                           JOIN users u ON s.teacher_id = u.id
-                           WHERE s.id = ?");
+$stmt = $koneksi->prepare("
+    SELECT s.*, u.fullname AS teacher_name, q.title
+    FROM quiz_sessions s
+    JOIN users u ON s.host_id = u.id
+    JOIN quizzes q ON s.quiz_id = q.id
+    WHERE s.id = ?
+");
 $stmt->bind_param("i", $session_id);
 $stmt->execute();
 $session = $stmt->get_result()->fetch_assoc();
+
 
 if (!$session) {
     echo "Sesi tidak ditemukan.";
