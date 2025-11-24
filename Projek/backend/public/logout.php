@@ -2,5 +2,5 @@
 header('Content-Type: application/json');
 session_start();
 session_destroy();
-echo json_encode(['message' => 'Logout berhasil kontol']);
+echo json_encode(['message' => 'Logout berhasil kontol memek']);
 ?>
