@@ -1,5 +1,5 @@
 <?php
-include "koneksi.php";
+require_once "auth.php";
 require_login();
 
 $user = current_user();
