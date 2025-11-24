@@ -58,7 +58,7 @@ $role = $user['role'];
 
         <div class="row g-3">
             <div class="col-md-4">
-                <a href="create_quiz.php">
+                <a href="teacher/create_quiz.php">
                     <div class="card-menu bg-white shadow-sm">
                         <h5>Buat Kuis Baru</h5>
                         <p class="text-muted">Buat kuis pilihan ganda seperti Quizizz</p>
@@ -67,7 +67,7 @@ $role = $user['role'];
             </div>
 
             <div class="col-md-4">
-                <a href="my_quizzes.php">
+                <a href="teacher/my_quizzes.php">
                     <div class="card-menu bg-white shadow-sm">
                         <h5>Kuis Saya</h5>
                         <p class="text-muted">Lihat semua kuis yang kamu buat</p>
@@ -76,7 +76,7 @@ $role = $user['role'];
             </div>
 
             <div class="col-md-4">
-                <a href="sessions.php">
+                <a href="teacher/start_session.php">
                     <div class="card-menu bg-white shadow-sm">
                         <h5>Mulai Game</h5>
                         <p class="text-muted">Bikin kode room untuk siswa join</p>
