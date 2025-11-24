@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $stmt->get_result();
 
         if ($row = $result->fetch_assoc()) {
-            if (password_verify($password, $row["password"])) {
+            if (password_verify($password, $row["password_hash"])) {
                 $_SESSION["user"] = [
                     "id" => $row["id"],
                     "username" => $row["username"],
