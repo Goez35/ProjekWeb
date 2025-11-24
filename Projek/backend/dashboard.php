@@ -90,7 +90,7 @@ $role = $user['role'];
 
         <div class="row g-3">
             <div class="col-md-6">
-                <a href="join_room.php">
+                <a href="student/join_room.php">
                     <div class="card-menu bg-white shadow-sm">
                         <h5>Join Kode Room</h5>
                         <p class="text-muted">Masukkan kode room dari guru</p>
