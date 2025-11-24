@@ -31,6 +31,12 @@ if (!$session) {
     exit;
 }
 
+// kalau teacher sudah start
+if ($session['status'] === 'in_progress') {
+    header("Location: quiz_play.php?q=1");
+    exit;
+}
+
 // ambil peserta
 $participants = $koneksi->prepare("SELECT p.nickname 
                                    FROM participants p 

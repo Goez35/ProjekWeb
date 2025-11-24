@@ -5,55 +5,78 @@ require_once "../koneksi.php";
 
 $user = current_user();
 
-// pastikan session aktif
+// pastikan session
 if (!isset($_SESSION['session_id'])) {
-    header("Location: ../student/join_room.php");
+    header("Location: join_room.php");
     exit;
 }
 
 $session_id = $_SESSION['session_id'];
 
-// ambil info session
+// ambil session info
 $session = $koneksi->prepare("SELECT * FROM quiz_sessions WHERE id = ?");
 $session->bind_param("i", $session_id);
 $session->execute();
 $session = $session->get_result()->fetch_assoc();
 
-if (!$session) {
-    die("Sesi tidak ditemukan.");
-}
+if (!$session) die("Sesi tidak ditemukan.");
 
-// ambil soal berdasarkan index
+// ambil soal berdasarkan urutan
 $current_index = intval($_GET['q'] ?? 1);
 
-// Ambil pertanyaan (urut berdasarkan ID)
 $q = $koneksi->prepare("SELECT * FROM questions WHERE quiz_id = ? ORDER BY id ASC");
 $q->bind_param("i", $session['quiz_id']);
 $q->execute();
 $questions = $q->get_result();
 
 $total_questions = $questions->num_rows;
-
-if ($total_questions < 1) {
-    die("Belum ada soal pada kuis ini.");
-}
+if ($total_questions < 1) die("Belum ada soal.");
 
 // ambil soal saat ini
 $questions->data_seek($current_index - 1);
 $current_question = $questions->fetch_assoc();
 
-// proses submit jawaban
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $answer = $_POST['answer'] ?? "";
-    $correct = ($answer == $current_question['correct_answer']) ? 1 : 0;
+// ambil pilihan jawaban dari tabel choices
+$choices = $koneksi->prepare("SELECT * FROM choices WHERE question_id = ?");
+$choices->bind_param("i", $current_question['id']);
+$choices->execute();
+$choices = $choices->get_result();
 
-    // simpan jawaban
-    $save = $koneksi->prepare("INSERT INTO user_answers (user_id, session_id, question_id, answer, is_correct)
-                               VALUES (?,?,?,?,?)");
-    $save->bind_param("iiisi", $user['id'], $session_id, $current_question['id'], $answer, $correct);
+// submit jawaban
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $choice_id = $_POST['answer'] ?? 0;
+
+    // cek apakah correct
+    $check = $koneksi->prepare("SELECT is_correct FROM choices WHERE id = ?");
+    $check->bind_param("i", $choice_id);
+    $check->execute();
+    $result = $check->get_result()->fetch_assoc();
+
+    $correct = ($result && $result['is_correct'] == 1) ? 1 : 0;
+
+    $sub = $koneksi->prepare("SELECT id FROM submissions WHERE participant_id = ? AND session_id = ?");
+    $sub->bind_param("ii", $user['id'], $session_id);
+
+    $sub->execute();
+    $submission = $sub->get_result()->fetch_assoc();
+
+    if (!$submission) {
+        die("Submission tidak ditemukan. Pastikan dibuat ketika student join room.");
+    }
+
+    $submission_id = $submission['id'];
+
+
+    $save = $koneksi->prepare("INSERT INTO submission_answers 
+        (submission_id, question_id, choice_id, typed_answer, is_correct, points_awarded, answered_at)
+        VALUES (?, ?, ?, NULL, ?, ?, NOW())"
+    );
+
+    $save->bind_param("iiiii", $submission_id, $current_question['id'], $choice_id, $correct, $points);
     $save->execute();
 
-    // pindah ke soal berikutnya
+    $points = ($correct == 1) ? $current_question['points'] : 0;
+
     if ($current_index >= $total_questions) {
         header("Location: finish.php?session_id=" . $session_id);
         exit;
@@ -63,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -76,24 +98,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="card p-4 shadow" style="max-width:600px; width:100%;">
     <h4 class="mb-3">Soal <?= $current_index ?> / <?= $total_questions ?></h4>
-    <p class="mb-3"><?= htmlspecialchars($current_question['question_text']) ?></p>
+    <p class="mb-3"><?= htmlspecialchars($current_question['text']) ?></p>
 
     <form method="POST">
         <div class="list-group mb-3">
-            <?php
-            $options = [
-                'A' => $current_question['option_a'],
-                'B' => $current_question['option_b'],
-                'C' => $current_question['option_c'],
-                'D' => $current_question['option_d'],
-            ];
-            foreach ($options as $key => $text):
-            ?>
+            <?php while ($ch = $choices->fetch_assoc()): ?>
                 <label class="list-group-item">
-                    <input type="radio" name="answer" value="<?= $key ?>" required>
-                    <strong><?= $key ?>.</strong> <?= htmlspecialchars($text) ?>
+                    <input type="radio" name="answer" value="<?= $ch['id'] ?>" required>
+                    <?= htmlspecialchars($ch['text']) ?>
                 </label>
-            <?php endforeach; ?>
+            <?php endwhile; ?>
         </div>
 
         <button class="btn btn-primary w-100">Jawab</button>
