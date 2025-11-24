@@ -7,7 +7,7 @@ $user = current_user();
 
 // pastikan session
 if (!isset($_SESSION['session_id'])) {
-    header("Location: join_room.php");
+    header("Location: ./quiz_play.php?q=1");
     exit;
 }
 
@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $submission_id = $submission['id'];
 
+    $points = ($correct == 1) ? $current_question['points'] : 0;
 
     $save = $koneksi->prepare("INSERT INTO submission_answers 
         (submission_id, question_id, choice_id, typed_answer, is_correct, points_awarded, answered_at)
@@ -75,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $save->bind_param("iiiii", $submission_id, $current_question['id'], $choice_id, $correct, $points);
     $save->execute();
 
-    $points = ($correct == 1) ? $current_question['points'] : 0;
 
     if ($current_index >= $total_questions) {
         header("Location: finish.php?session_id=" . $session_id);
