@@ -15,13 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username === '' || $password === '') {
         $error = "Username dan password harus diisi!";
     } else {
-        $stmt = $koneksi->prepare("SELECT id, username, fullname, password_hash, role FROM users WHERE username = ? OR email = ?");
+        $stmt = $koneksi->prepare("SELECT id, username, fullname, password, role FROM users WHERE username = ? OR email = ?");
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($row = $result->fetch_assoc()) {
-            if (password_verify($password, $row["password_hash"])) {
+            if (password_verify($password, $row["password"])) {
                 $_SESSION["user"] = [
                     "id" => $row["id"],
                     "username" => $row["username"],
