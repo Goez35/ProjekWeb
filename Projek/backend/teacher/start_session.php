@@ -4,40 +4,40 @@ include "../koneksi.php";
 require_login();
 
 $user = current_user();
+if ($user['role'] !== 'teacher') die("Akses ditolak.");
 
-if ($user['role'] !== 'teacher') {
-    die("Hanya teacher.");
-}
+if (!isset($_GET['quiz_id'])) die("Quiz tidak ditemukan.");
 
-$quiz_id = intval($_POST['quiz_id']);
-$question_text = $_POST['question_text'];
-$correct_choice = intval($_POST['correct_choice']);
+$quiz_id = intval($_GET['quiz_id']);
 
-// Insert pertanyaan
-$stmt = $koneksi->prepare("INSERT INTO questions (quiz_id, text, question_type) VALUES (?, ?, 'single')");
-$stmt->bind_param("is", $quiz_id, $question_text);
+// generate kode room unik 6-digit
+$join_code = strtoupper(substr(md5(time()), 0, 6));
+
+$stmt = $koneksi->prepare("
+    INSERT INTO quiz_sessions (quiz_id, host_id, join_code, status)
+    VALUES (?, ?, ?, 'waiting')
+");
+$stmt->bind_param("iis", $quiz_id, $user['id'], $join_code);
 $stmt->execute();
-$question_id = $stmt->insert_id;
-$stmt->close();
+$session_id = $stmt->insert_id;
 
-// Insert pilihan jawaban
-for ($i = 1; $i <= 4; $i++) {
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mulai Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4 text-center">
 
-    $choice_text = $_POST['choice'.$i];
-    $is_correct = ($i == $correct_choice) ? 1 : 0;
+<h2>Kode Room:</h2>
+<h1 style="font-size:60px; letter-spacing:10px;"><?= $join_code ?></h1>
 
-    $stmt2 = $koneksi->prepare("INSERT INTO choices (question_id, text, is_correct) VALUES (?, ?, ?)");
-    $stmt2->bind_param("isi", $question_id, $choice_text, $is_correct);
-    $stmt2->execute();
-    $stmt2->close();
-}
+<p class="text-muted">Berikan kode ini kepada siswa</p>
 
-// Cek apakah teacher klik "Tambah Lagi"
-if (isset($_POST['add_more'])) {
-    header("Location: add_question.php?quiz_id=" . $quiz_id);
-    exit;
-}
+<a href="session_lobby.php?session_id=<?= $session_id ?>" class="btn btn-primary mt-3">
+    Masuk ke Lobi Game
+</a>
 
-// Jika klik selesai
-header("Location: ../dashboard.php?success=quiz_saved");
-exit;
+</body>
+</html>
