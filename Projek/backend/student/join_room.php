@@ -26,6 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insert->bind_param("iis", $session['id'], $user['id'], $nickname);
             $insert->execute();
 
+            $participant_id = $koneksi->insert_id;
+
+            // buat submission untuk peserta baru
+            $makeSub = $koneksi->prepare("INSERT INTO submissions (session_id, participant_id, score, correct_count, wrong_count, finished_at)
+                                        VALUES (?, ?, 0, 0, 0, NULL)");
+            $makeSub->bind_param("ii", $session['id'], $participant_id);
+            $makeSub->execute();
+
             $_SESSION['session_id'] = $session['id'];
 
             header("Location: waiting_room.php?session_id=" . $session['id']);

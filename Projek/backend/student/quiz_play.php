@@ -54,9 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $correct = ($result && $result['is_correct'] == 1) ? 1 : 0;
 
-    $sub = $koneksi->prepare("SELECT id FROM submissions WHERE participant_id = ? AND session_id = ?");
-    $sub->bind_param("ii", $user['id'], $session_id);
+    // Ambil participant_id berdasarkan user yang sedang login
+    $part = $koneksi->prepare("SELECT id FROM participants WHERE user_id = ? AND session_id = ?");
+    $part->bind_param("ii", $user['id'], $session_id);
+    $part->execute();
+    $participant = $part->get_result()->fetch_assoc();
 
+    if (!$participant) {
+        die("Participant tidak ditemukan.");
+    }
+
+    $participant_id = $participant['id'];
+
+    // Ambil submission berdasarkan participant_id
+    $sub = $koneksi->prepare("SELECT id FROM submissions WHERE participant_id = ? AND session_id = ?");
+    $sub->bind_param("ii", $participant_id, $session_id);
     $sub->execute();
     $submission = $sub->get_result()->fetch_assoc();
 
