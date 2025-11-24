@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username === '' || $password === '') {
         $error = "Username dan password harus diisi!";
     } else {
-        $stmt = $koneksi->prepare("SELECT id, username, password, role FROM users WHERE username = ? OR email = ?");
+        $stmt = $koneksi->prepare("SELECT id, username, fullname, password_hash, role FROM users WHERE username = ? OR email = ?");
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
         $result = $stmt->get_result();
