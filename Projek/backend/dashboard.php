@@ -48,7 +48,7 @@ $role = $user['role'];
 <body>
 
 <div class="header">
-    Selamat datang, <?= htmlspecialchars($user['fullname']) ?> (<?= $role ?>)
+    Selamat datang, <?= htmlspecialchars($users['fullname']) ?> (<?= $role ?>)
 </div>
 
 <div class="container mt-4">
