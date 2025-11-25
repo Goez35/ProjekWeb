@@ -96,7 +96,7 @@ setInterval(() => {
         .then(r => r.json())
         .then(res => {
             if (res.status === "in_progress") {
-                window.location.href = "play_question.php?session_id=<?= $session_id ?>";
+                window.location.href = "quiz_play.php?session_id=<?= $session_id ?>";
             }
         });
 }, 2000);
