@@ -5,7 +5,6 @@ require_once "../koneksi.php";
 
 $user = current_user();
 
-// pastikan session
 if (!isset($_SESSION['session_id'])) {
     header("Location: join_room.php");
     exit;
@@ -13,7 +12,6 @@ if (!isset($_SESSION['session_id'])) {
 
 $session_id = $_SESSION['session_id'];
 
-// Ambil session info
 $session_sql = $koneksi->prepare("SELECT * FROM quiz_sessions WHERE id = ?");
 $session_sql->bind_param("i", $session_id);
 $session_sql->execute();
@@ -22,7 +20,6 @@ if (!$session) die("Sesi tidak ditemukan.");
 
 $current_index = $session['current_question_index'] + 1;
 
-// ambil semua pertanyaan
 $q = $koneksi->prepare("SELECT * FROM questions WHERE quiz_id = ? ORDER BY id ASC");
 $q->bind_param("i", $session['quiz_id']);
 $q->execute();
@@ -33,13 +30,11 @@ if ($total_questions < 1) die("Belum ada soal.");
 $questions->data_seek($current_index - 1);
 $current_question = $questions->fetch_assoc();
 
-// ambil pilihan jawaban dari tabel choices
 $choices = $koneksi->prepare("SELECT * FROM choices WHERE question_id = ?");
 $choices->bind_param("i", $current_question['id']);
 $choices->execute();
 $choices = $choices->get_result();
 
-// ambil participant
 $part = $koneksi->prepare("SELECT id FROM participants WHERE user_id = ? AND session_id = ?");
 $part->bind_param("ii", $user['id'], $session_id);
 $part->execute();
@@ -48,7 +43,6 @@ if (!$participant) die("Participant tidak ditemukan.");
 
 $participant_id = $participant['id'];
 
-// ambil submission
 $sub = $koneksi->prepare("SELECT id FROM submissions WHERE participant_id = ? AND session_id = ?");
 $sub->bind_param("ii", $participant_id, $session_id);
 $sub->execute();
@@ -57,7 +51,6 @@ if (!$submission) die("Submission tidak ditemukan.");
 
 $submission_id = $submission['id'];
 
-// cek apakah sudah jawab
 $check_answer = $koneksi->prepare("SELECT choice_id FROM submission_answers WHERE submission_id = ? AND question_id = ?");
 $check_answer->bind_param("ii", $submission_id, $current_question['id']);
 $check_answer->execute();
@@ -66,18 +59,14 @@ $answer_row = $check_answer->get_result()->fetch_assoc();
 $already_answered = $answer_row ? true : false;
 $selected_choice = $answer_row['choice_id'] ?? null;
 
-// Jika sudah jawab, langsung tampil waiting
 if ($already_answered) {
     header("Location: waiting_next_question.php");
     exit;
 }
 
-// submit jawaban
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $choice_id = $_POST['answer'];
 
-    // cek correct
     $check = $koneksi->prepare("SELECT is_correct FROM choices WHERE id = ?");
     $check->bind_param("i", $choice_id);
     $check->execute();
@@ -92,47 +81,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $save->bind_param("iiiii", $submission_id, $current_question['id'], $choice_id, $correct, $points);
     $save->execute();
 
-    // Jika soal terakhir
-    if ($current_index >= $total_questions) {
-        // cek apakah teacher sudah finish
-        header("Location: waiting_next_question.php");
-        exit;
-    }
-
     header("Location: waiting_next_question.php");
     exit;
 }
 ?>
 
-?>
 <!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Kuis Sedang Berjalan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: url('../student/bg-purple.png') center/cover no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Poppins, sans-serif;
+        }
+        .quiz-card {
+            width: 750px;
+            background: rgba(255,255,255,0.93);
+            border-radius: 22px;
+            padding: 40px;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            animation: fadeIn .5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity:0; transform: translateY(10px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+        .list-group-item {
+            font-size: 1.05rem;
+            border-radius: 12px !important;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
-<body class="bg-light d-flex align-items-center justify-content-center" style="min-height:100vh">
+<body>
 
-<div class="card p-4 shadow" style="max-width:600px; width:100%;">
-    <h4 class="mb-3">Soal <?= $current_index ?> / <?= $total_questions ?></h4>
-    <p class="mb-3"><?= htmlspecialchars($current_question['text']) ?></p>
+<div class="quiz-card">
+    <h3 class="mb-3 fw-bold">Soal <?= $current_index ?> / <?= $total_questions ?></h3>
+    <p class="mb-3 fs-5"><?= htmlspecialchars($current_question['text']) ?></p>
 
     <form method="POST">
         <div class="list-group mb-3">
             <?php while ($ch = $choices->fetch_assoc()): ?>
-                <label class="list-group-item <?= ($already_answered && $selected_choice == $ch['id']) ? 'list-group-item-success' : '' ?>">
-                    <input type="radio" name="answer" value="<?= $ch['id'] ?>" 
-                        <?= $already_answered ? 'disabled' : '' ?>
-                        <?= ($selected_choice == $ch['id']) ? 'checked' : '' ?>>
+                <label class="list-group-item">
+                    <input type="radio" name="answer" value="<?= $ch['id'] ?>" <?= ($selected_choice == $ch['id']) ? 'checked' : '' ?>>
                     <?= htmlspecialchars($ch['text']) ?>
                 </label>
             <?php endwhile; ?>
         </div>
 
-        <button class="btn btn-primary w-100" <?= $already_answered ? 'disabled' : '' ?>>
-            <?= $already_answered ? "Menunggu Teacher..." : "Jawab" ?>
-        </button>
+        <button class="btn btn-primary w-100">Jawab 🚀</button>
     </form>
 </div>
 
