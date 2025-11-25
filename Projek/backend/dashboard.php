@@ -11,34 +11,58 @@ $role = $user['role'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Quizizz</title>
+    <title>Dashboard</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f5f2ff;
+            background: linear-gradient(135deg, #3b0075, #6f00b7);
             min-height: 100vh;
-        }
-        .header {
-            background: #8A2BE2;
-            padding: 18px;
             color: white;
-            font-weight: 600;
-            font-size: 20px;
         }
+
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.25);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #fff !important;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+        }
+
+        .main-container {
+            margin-top: 60px;
+        }
+
         .card-menu {
-            border-radius: 16px;
-            padding: 22px;
-            transition: 0.2s;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            padding: 26px;
+            transition: .25s;
+            color: white;
             cursor: pointer;
         }
+
         .card-menu:hover {
-            background: #eee1ff;
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.25);
         }
+
+        .card-menu p {
+            color: #e3e3e3;
+        }
+
         a {
             text-decoration: none;
         }
@@ -47,74 +71,78 @@ $role = $user['role'];
 
 <body>
 
-<div class="header">
-    Selamat datang, <?= htmlspecialchars($user['fullname']) ?> (<?= $role ?>)
-</div>
+<nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container-fluid">
+        <img src="" alt="">
+        <a class="navbar-brand">Halo, <?= htmlspecialchars($user['fullname']) ?> (<?= $role ?>)</a>
 
-<div class="container mt-4">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item">
+                    <a href="logout.php" class="btn btn-warning px-3 fw-bold">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container main-container">
 
     <?php if ($role == "teacher"): ?>
-        <h3 class="mb-3">Menu Teacher</h3>
+        <h2 class="fw-bold mb-4">Menu Teacher</h2>
 
-        <div class="row g-3">
+        <div class="row g-4">
             <div class="col-md-4">
                 <a href="teacher/create_quiz.php">
-                    <div class="card-menu bg-white shadow-sm">
-                        <h5>Buat Kuis Baru</h5>
-                        <p class="text-muted">Buat kuis pilihan ganda seperti Quizizz</p>
+                    <div class="card-menu shadow-lg">
+                        <h4 class="fw-bold">Buat Kuis Baru</h4>
+                        <p>Buat kuis pilihan ganda seperti Quizizz</p>
                     </div>
                 </a>
             </div>
 
             <div class="col-md-4">
                 <a href="teacher/my_quizzes.php">
-                    <div class="card-menu bg-white shadow-sm">
-                        <h5>Kuis Saya</h5>
-                        <p class="text-muted">Lihat semua kuis yang kamu buat</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4">
-                <a href="teacher/start_session.php">
-                    <div class="card-menu bg-white shadow-sm">
-                        <h5>Mulai Game</h5>
-                        <p class="text-muted">Bikin kode room untuk siswa join</p>
+                    <div class="card-menu shadow-lg">
+                        <h4 class="fw-bold">Kuis Saya</h4>
+                        <p>Lihat semua kuis milikmu</p>
                     </div>
                 </a>
             </div>
         </div>
 
     <?php else: ?>
-        <h3 class="mb-3">Menu Student</h3>
+        <h2 class="fw-bold mb-4">Menu Student</h2>
 
-        <div class="row g-3">
+        <div class="row g-4">
             <div class="col-md-6">
                 <a href="student/join_room.php">
-                    <div class="card-menu bg-white shadow-sm">
-                        <h5>Join Kode Room</h5>
-                        <p class="text-muted">Masukkan kode room dari guru</p>
+                    <div class="card-menu shadow-lg">
+                        <h4 class="fw-bold">Join Kode Room</h4>
+                        <p>Masukkan kode yang diberikan guru</p>
                     </div>
                 </a>
             </div>
 
             <div class="col-md-6">
                 <a href="student/score_history.php">
-                    <div class="card-menu bg-white shadow-sm">
-                        <h5>Riwayat Nilai</h5>
-                        <p class="text-muted">Lihat nilai kuis kamu</p>
+                    <div class="card-menu shadow-lg">
+                        <h4 class="fw-bold">Riwayat Nilai</h4>
+                        <p>Lihat hasil kuis yang pernah kamu ikuti</p>
                     </div>
                 </a>
             </div>
         </div>
     <?php endif; ?>
 
-    <div class="mt-4">
-        <a href="logout.php" class="btn btn-danger">Logout</a>
-    </div>
-
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
