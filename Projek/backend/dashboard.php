@@ -99,7 +99,7 @@ $role = $user['role'];
             </div>
 
             <div class="col-md-6">
-                <a href="history.php">
+                <a href="student/score_history.php">
                     <div class="card-menu bg-white shadow-sm">
                         <h5>Riwayat Nilai</h5>
                         <p class="text-muted">Lihat nilai kuis kamu</p>
