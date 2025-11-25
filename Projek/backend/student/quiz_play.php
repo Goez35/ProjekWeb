@@ -78,17 +78,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $submission_id = $submission['id'];
 
-    // cek apakah user sudah menjawab current question
+    // Cek apakah user sudah jawab pertanyaan ini
     $check_answer = $koneksi->prepare("
         SELECT choice_id FROM submission_answers 
         WHERE submission_id = ? AND question_id = ?
     ");
-    $check_answer->bind_param("ii", $submission['id'], $current_question['id']);
+    $check_answer->bind_param("ii", $submission_id, $current_question['id']);
     $check_answer->execute();
-    $answered_row = $check_answer->get_result()->fetch_assoc();
+    $answer_row = $check_answer->get_result()->fetch_assoc();
 
-    $already_answered = $answered_row ? true : false;
-    $selected_choice = $answered_row['choice_id'] ?? null;
+    $already_answered = $answer_row ? true : false;
+    $selected_choice = $answer_row['choice_id'] ?? null;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$already_answered) {
 

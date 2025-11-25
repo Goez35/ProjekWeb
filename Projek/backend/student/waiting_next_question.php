@@ -1,20 +1,42 @@
 <?php
-$session = $koneksi->query("SELECT current_question_index, status FROM quiz_sessions WHERE id=$session_id")->fetch_assoc();
+session_start();
+require_once "../auth.php";
+require_login();
+require_once "../koneksi.php";
 
+$user = current_user();
+
+// cek session id
+if (!isset($_SESSION['session_id'])) {
+    header("Location: join_room.php");
+    exit;
+}
+
+$session_id = $_SESSION['session_id'];
+
+// ambil status dan current index terbaru dari server
+$session = $koneksi->query("
+    SELECT current_question_index, status 
+    FROM quiz_sessions 
+    WHERE id=$session_id
+")->fetch_assoc();
+
+// kalau teacher sudah finish quiz
 if ($session['status'] === 'finished') {
     header("Location: finish.php?session_id=$session_id");
     exit;
 }
 
+// hitung index soal terbaru
 $current_index = $session['current_question_index'] + 1;
 
-if ($current_index != $_SESSION['last_question_index']) {
+// kalau teacher sudah next dan student belum lihat soal baru
+if (!isset($_SESSION['last_question_index']) || $current_index != $_SESSION['last_question_index']) {
     $_SESSION['last_question_index'] = $current_index;
     header("Location: quiz_play.php");
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
