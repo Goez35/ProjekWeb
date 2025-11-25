@@ -78,6 +78,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $submission_id = $submission['id'];
 
+    // kalau teacher sudah ganti soal, refresh otomatis menangkap update
+    if ($session['status'] === 'finished') {
+        header("Location: finish.php?session_id=$session_id");
+        exit;
+    }
+
+    // kalau user sudah menjawab current question, tampilkan halaman tunggu
+    $check_answer = $koneksi->prepare("
+        SELECT id FROM submission_answers 
+        WHERE submission_id = ? AND question_id = ?
+    ");
+    $check_answer->bind_param("ii", $submission_id, $current_question['id']);
+    $check_answer->execute();
+    $already_answered = $check_answer->get_result()->num_rows > 0;
+
+    if ($already_answered) {
+        header("Location: waiting_next_question.php");
+        exit;
+    }
+
+
     $points = ($correct == 1) ? $current_question['points'] : 0;
 
     $save = $koneksi->prepare("INSERT INTO submission_answers 
@@ -89,12 +110,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $save->execute();
 
 
-    if ($current_index > $total_questions) {
+    if ($current_index >= $total_questions) {
         header("Location: finish.php?session_id=" . $session_id);
         exit;
     }
 
-    header("Location: quiz_play.php");
+    header("Location: waiting_next_question.php");
     exit;
 
     }
@@ -102,7 +123,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="2">
     <title>Kuis Sedang Berjalan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>

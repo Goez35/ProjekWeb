@@ -1,18 +1,43 @@
 <?php
-include "../koneksi.php";
 session_start();
+require_once "../koneksi.php";
+require_once "../auth.php";
+require_login();
 
-$participant_id = $_SESSION['participant_id'];
-$get = $koneksi->query("SELECT * FROM participants WHERE id=$participant_id");
-$participant = $get->fetch_assoc();
+$user = current_user();
 
-$session_id = $participant['session_id'];
+if (!isset($_SESSION['session_id'])) {
+    header("Location: join_room.php");
+    exit;
+}
+
+$session_id = $_SESSION['session_id'];
+
+// Ambil participant yang sesuai user login
+$part = $koneksi->prepare("SELECT id FROM participants WHERE user_id = ? AND session_id = ?");
+$part->bind_param("ii", $user['id'], $session_id);
+$part->execute();
+$participant = $part->get_result()->fetch_assoc();
+
+if (!$participant) {
+    die("Participant tidak ditemukan.");
+}
+
+$participant_id = $participant['id'];
+
+// cek status session
 $session = $koneksi->query("SELECT * FROM quiz_sessions WHERE id=$session_id")->fetch_assoc();
 
 if ($session['status'] === 'finished') {
-    header("Location: student_finished.php");
+    header("Location: finish.php?session_id=$session_id");
     exit;
 }
+
+// cek apakah teacher sudah NEXT
+// jika current index bertambah, balik ke quiz_play
+$next_index = $session['current_question_index'] + 1;
+header("Location: quiz_play.php");
+exit;
 ?>
 <!DOCTYPE html>
 <html>
