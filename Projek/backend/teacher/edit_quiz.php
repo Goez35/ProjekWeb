@@ -1,0 +1,49 @@
+<?php
+include "../auth.php";
+include "../koneksi.php";
+require_login();
+
+$user = current_user();
+if ($user['role'] !== 'teacher') {
+    die("Akses ditolak.");
+}
+
+if (!isset($_GET['id'])) {
+    die("Quiz ID tidak ditemukan.");
+}
+
+$quiz_id = intval($_GET['id']);
+$sql = $koneksi->query("SELECT * FROM quizzes WHERE id = $quiz_id");
+$quiz = $sql->fetch_assoc();
+?>
+<?php include __DIR__ . '/../includes/header.php'; ?>
+<body class="p-4">
+
+<h3>Edit Kuis: <?= htmlspecialchars($quiz['title']) ?></h3>
+
+<form action="update_quiz.php" method="POST" enctype="multipart/form-data">
+
+    <input type="hidden" name="id" value="<?= $quiz_id ?>">
+
+    <label class="form-label mt-3">Judul</label>
+    <input type="text" name="title" value="<?= htmlspecialchars($quiz['title']) ?>" class="form-control">
+
+    <label class="form-label mt-3">Deskripsi</label>
+    <textarea name="description" class="form-control"><?= htmlspecialchars($quiz['description']) ?></textarea>
+
+    <label class="form-label mt-3">Cover Baru (opsional)</label>
+    <input type="file" name="cover" class="form-control">
+
+    <label class="form-label mt-3">Visibility</label>
+    <select name="visibility" class="form-select">
+        <option value="private" <?= $quiz['visibility'] == 'private'?'selected':'' ?>>Private</option>
+        <option value="public" <?= $quiz['visibility'] == 'public'?'selected':'' ?>>Public</option>
+    </select>
+
+    <button class="btn btn-success mt-3">Simpan Perubahan</button>
+
+</form>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>
+</body>
+</html>
