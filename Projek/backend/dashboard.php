@@ -84,6 +84,22 @@ $role = $user['role'];
             margin-right: 12px;       /* jarak sama teks biar napas */
         }
 
+        .card-menu.student-card {
+    width: 100%;
+    max-width: 360px;       /* Biar kotaknya pas, tidak kurus */
+    min-height: 160px;      /* Tinggi minimum cantik */
+    padding: 35px 20px;
+    border-radius: 25px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(12px);
+}
+
     </style>
 </head>
 
@@ -112,7 +128,6 @@ $role = $user['role'];
 <div class="container main-container">
 
     <?php if ($role == "teacher"): ?>
-        <h2 class="fw-bold mb-4">Menu Teacher</h2>
 
         <div class="row g-4 justify-content-center">
             <div class="col-md-4 d-flex">
@@ -134,29 +149,19 @@ $role = $user['role'];
             </div>
         </div>
 
-    <?php else: ?>
-        <h2 class="fw-bold mb-4">Menu Student</h2>
+   <?php else: ?>
 
-        <div class="row g-4 justify-content-center">
-            <div class="col-md-4 d-flex">
-                <a href="student/join_room.php" class="w-100">
-                    <div class="card-menu shadow-lg h-100">
-                        <h4 class="fw-bold">Join Kode Room</h4>
-                        <p>Masukkan kode yang diberikan guru</p>
-                    </div>
-                </a>
+    <div class="d-flex justify-content-center">
+        <a href="student/join_room.php" style="text-decoration:none;">
+            <div class="card-menu student-card shadow-lg">
+                <h3 class="fw-bold">Join Kode Room</h3>
+                <p style="color:#eee;">Masukkan kode yang diberikan guru</p>
             </div>
+        </a>
+    </div>
+<?php endif; ?>
 
-            <div class="col-md-4 d-flex">
-                <a href="student/score_history.php" class="w-100">
-                    <div class="card-menu shadow-lg h-100">
-                        <h4 class="fw-bold">Riwayat Nilai</h4>
-                        <p>Lihat hasil kuis yang pernah kamu ikuti</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    <?php endif; ?>
+
 
 </div>
 
