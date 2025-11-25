@@ -39,6 +39,12 @@
 
         label { font-weight:600; color:white; }
 
+        select option {
+            color: #000 !important;
+            background: #fff;
+        }
+
+
         input, textarea, select {
             background: rgba(255,255,255,0.22) !important;
             border: none !important;
