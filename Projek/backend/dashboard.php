@@ -66,6 +66,13 @@ $role = $user['role'];
         a {
             text-decoration: none;
         }
+
+        .navbar-logo {
+            height: 80px;             /* kecilin ukuran */
+            width: auto;
+            margin-right: 12px;       /* jarak sama teks biar napas */
+        }
+
     </style>
 </head>
 
@@ -73,7 +80,7 @@ $role = $user['role'];
 
 <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <div class="container-fluid">
-        <img src="" alt="">
+        <img src="logo.png" alt="logo" class="navbar-logo">
         <a class="navbar-brand">Halo, <?= htmlspecialchars($user['fullname']) ?> (<?= $role ?>)</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
