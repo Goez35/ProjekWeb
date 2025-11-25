@@ -5,7 +5,7 @@ require_once "../koneksi.php";
 
 $user = current_user();
 
-// pastikan session
+// pastikan session ilham
 if (!isset($_SESSION['session_id'])) {
     header("Location: ./quiz_play.php?q=1");
     exit;
