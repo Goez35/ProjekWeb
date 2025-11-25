@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <style>
         body {
-            background: url('../student/bg-purple.png') center/cover no-repeat;
+            background: url('backgroundquiz.png') center/cover no-repeat;
             min-height: 100vh;
             display: flex;
             justify-content: center;
