@@ -92,6 +92,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $save->bind_param("iiiii", $submission_id, $current_question['id'], $choice_id, $correct, $points);
     $save->execute();
 
+    // Jika soal terakhir
+    if ($current_index >= $total_questions) {
+        // cek apakah teacher sudah finish
+        header("Location: waiting_next_question.php");
+        exit;
+    }
+
     header("Location: waiting_next_question.php");
     exit;
 }
