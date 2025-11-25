@@ -75,16 +75,20 @@ if ($current_index < $total_questions) {
 
         <div class="mt-4 d-flex gap-2">
 
-            <form action="teacher_next_question_process.php" method="POST">
-                <input type="hidden" name="session_id" value="<?= $session_id ?>">
-                <input type="hidden" name="quiz_id" value="<?= $quiz_id ?>">
-                <button name="next" value="1" class="btn btn-primary">Next Question</button>
-            </form>
+            <?php if ($current_index + 1 < $total_questions): ?>
+                <form action="teacher_next_question_process.php" method="POST">
+                    <input type="hidden" name="session_id" value="<?= $session_id ?>">
+                    <input type="hidden" name="quiz_id" value="<?= $quiz_id ?>">
+                    <button name="next" value="1" class="btn btn-primary">Next Question</button>
+                </form>
+            <?php endif; ?>
 
-            <form action="teacher_next_question_process.php" method="POST">
-                <input type="hidden" name="session_id" value="<?= $session_id ?>">
-                <button name="finish" value="1" class="btn btn-danger">Finish Quiz</button>
-            </form>
+            <?php if ($current_index + 1 == $total_questions): ?>
+                <form action="teacher_next_question_process.php" method="POST">
+                    <input type="hidden" name="session_id" value="<?= $session_id ?>">
+                    <button name="finish" value="1" class="btn btn-danger">Finish Quiz</button>
+                </form>
+            <?php endif; ?>
 
         </div>
 
