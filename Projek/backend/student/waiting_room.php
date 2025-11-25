@@ -3,48 +3,29 @@ require_once "../auth.php";
 require_login();
 require_once "../koneksi.php";
 
-$user = current_user();
+$session_id = $_GET['session_id'] ?? null;
 
-// pastikan session_id ada
-if (!isset($_SESSION['session_id'])) {
-    header("Location: join_room.php");
-    exit;
+if (!$session_id) {
+    die("Session ID tidak ditemukan.");
 }
 
-$session_id = $_SESSION['session_id'];
-
-// ambil data session
+// ambil info sesi
 $stmt = $koneksi->prepare("
-    SELECT s.*, u.fullname AS teacher_name, q.title
-    FROM quiz_sessions s
-    JOIN users u ON s.host_id = u.id
-    JOIN quizzes q ON s.quiz_id = q.id
-    WHERE s.id = ?
+    SELECT qs.*, q.title AS quiz_title 
+    FROM quiz_sessions qs
+    JOIN quizzes q ON qs.quiz_id = q.id
+    WHERE qs.id = ?
 ");
 $stmt->bind_param("i", $session_id);
 $stmt->execute();
 $session = $stmt->get_result()->fetch_assoc();
-
+$stmt->close();
 
 if (!$session) {
-    echo "Sesi tidak ditemukan.";
-    exit;
+    die("Sesi tidak ditemukan.");
 }
-
-// kalau teacher sudah start
-if ($session['status'] === 'in_progress') {
-    header("Location: quiz_play.php?q=1");
-    exit;
-}
-
-// ambil peserta
-$participants = $koneksi->prepare("SELECT p.nickname 
-                                   FROM participants p 
-                                   WHERE p.session_id = ?");
-$participants->bind_param("i", $session_id);
-$participants->execute();
-$participants = $participants->get_result();
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -52,31 +33,76 @@ $participants = $participants->get_result();
     <title>Waiting Room</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <meta http-equiv="refresh" content="4"> <!-- auto refresh tiap 4 detik -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('../backgroundquiz.png') center/cover no-repeat fixed;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            padding: 45px 35px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .glass-card h2 {
+            font-weight: 700;
+        }
+
+        .sub-text {
+            color: #e5e5e5;
+            font-size: 1rem;
+            margin-top: -5px;
+        }
+
+        .loader {
+            margin-top: 25px;
+            width: 55px;
+            height: 55px;
+            border: 6px solid rgba(255,255,255,0.25);
+            border-top-color: #ffca28;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 
-<body class="bg-light d-flex align-items-center justify-content-center" style="min-height:100vh">
+<body class="d-flex align-items-center justify-content-center">
 
-<div class="container" style="max-width:450px;">
-    <div class="card shadow p-4">
-        <h3 class="text-center mb-1">Menunggu Peserta Lain...</h3>
-        <p class="text-center text-muted mb-3">
-            Teacher: <strong><?= htmlspecialchars($session['teacher_name']) ?></strong><br>
-            Room Code: <strong><?= htmlspecialchars($session['join_code']) ?></strong>
-        </p>
+<div class="glass-card shadow-lg">
 
-        <h5 class="mb-2">Peserta bergabung:</h5>
-        <ul class="list-group mb-3">
-            <?php while ($row = $participants->fetch_assoc()): ?>
-                <li class="list-group-item"><?= htmlspecialchars($row['nickname']) ?></li>
-            <?php endwhile; ?>
-        </ul>
+    <h2>Menunggu Guru Memulai Kuis...</h2>
+    <p class="sub-text">Kuis: <b><?= htmlspecialchars($session['quiz_title']) ?></b></p>
+    <p class="sub-text mb-2">Kode Room: <b><?= htmlspecialchars($session['join_code']) ?></b></p>
 
-        <div class="text-center">
-            <p class="small text-secondary">Menunggu teacher memulai game...</p>
-        </div>
-    </div>
+    <div class="loader"></div>
+
+    <p class="sub-text mt-4">Tetap di halaman ini ya 🌟</p>
 </div>
+
+<script>
+// auto refresh status tiap 2 detik
+setInterval(() => {
+    fetch("check_session_status.php?session_id=<?= $session_id ?>")
+        .then(r => r.json())
+        .then(res => {
+            if (res.status === "in_progress") {
+                window.location.href = "play_question.php?session_id=<?= $session_id ?>";
+            }
+        });
+}, 2000);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
