@@ -84,19 +84,5 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg">
-  <div class="container-fluid">
-    <div class="d-flex align-items-center gap-2">
-      <img src="../logoremovedbg.png" class="navbar-logo" alt="logo">
-      <strong><?= htmlspecialchars(current_user()['fullname'] ?? 'Teacher') ?></strong>
-    </div>
-
-    <div class="collapse navbar-collapse justify-content-end">
-      <a href="../dashboard.php" class="btn btn-sm btn-outline-light me-2">Dashboard</a>
-      <a href="../logout.php" class="btn btn-sm btn-warning fw-bold">Logout</a>
-    </div>
-  </div>
-</nav>
-
 <div class="container d-flex justify-content-center align-items-start" style="padding-top:32px; padding-bottom:32px;">
   <div class="main-card">
