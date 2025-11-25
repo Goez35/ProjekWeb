@@ -78,7 +78,34 @@
             object-fit: cover;
             border-bottom: 1px solid rgba(255,255,255,0.25);
         }
+        
+        .table-glass {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #fff;
+            border-radius: 14px;
+            overflow:hidden;
+        }
 
+        .table-glass thead {
+            background: rgba(0,0,0,0.6) !important;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .table-glass tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .table-glass tbody tr:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .table-glass td, .table-glass th {
+            border: none;
+            padding: 14px 10px;
+        }
     </style>
 </head>
 
