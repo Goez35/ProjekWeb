@@ -33,7 +33,7 @@ $leaderboard = $list->get_result();
 
     <h2 class="text-center mb-4">Leaderboard</h2>
 
-    <table class="table-glass text-center">
+    <table class="table-glass text-center" style="width: 100%;">
         <thead class="table-dark">
             <tr>
                 <th>Peringkat</th>
