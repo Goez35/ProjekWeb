@@ -24,7 +24,6 @@ $quiz_id = intval($_GET['quiz_id']);
 
 <div class="container mt-4">
 
-    <div class="card shadow-sm p-4">
 
         <form action="save_question.php" method="POST">
 
@@ -58,7 +57,6 @@ $quiz_id = intval($_GET['quiz_id']);
 
         </form>
 
-    </div>
 
 </div>
 
