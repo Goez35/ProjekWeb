@@ -56,6 +56,29 @@
             border-radius:12px;
             padding:10px 18px;
         }
+
+        .quiz-card {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 18px;
+            overflow: hidden;
+            color: white;
+            transition: .25s;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-6px);
+            background: rgba(255,255,255,0.18);
+        }
+
+        .quiz-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255,255,255,0.25);
+        }
+
     </style>
 </head>
 
