@@ -41,7 +41,13 @@ $role = $user['role'];
         }
 
         .main-container {
-            margin-top: 60px;
+            margin-top: 75px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 75px);  /* biar full height di bawah navbar */
+            text-align: center;
         }
 
         .card-menu {
@@ -52,6 +58,11 @@ $role = $user['role'];
             transition: .25s;
             color: white;
             cursor: pointer;
+            min-height: 170px;         /* bikin tinggi semua sama */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;   /* biar text-nya center vertical */
+            text-align: center;
         }
 
         .card-menu:hover {
@@ -103,19 +114,19 @@ $role = $user['role'];
     <?php if ($role == "teacher"): ?>
         <h2 class="fw-bold mb-4">Menu Teacher</h2>
 
-        <div class="row g-4">
-            <div class="col-md-4">
-                <a href="teacher/create_quiz.php">
-                    <div class="card-menu shadow-lg">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 d-flex">
+                <a href="teacher/create_quiz.php" class="w-100">
+                    <div class="card-menu shadow-lg h-100">
                         <h4 class="fw-bold">Buat Kuis Baru</h4>
                         <p>Buat kuis pilihan ganda seperti Quizizz</p>
                     </div>
                 </a>
             </div>
 
-            <div class="col-md-4">
-                <a href="teacher/my_quizzes.php">
-                    <div class="card-menu shadow-lg">
+            <div class="col-md-4 d-flex">
+                <a href="teacher/my_quizzes.php" class="w-100">
+                    <div class="card-menu shadow-lg h-100">
                         <h4 class="fw-bold">Kuis Saya</h4>
                         <p>Lihat semua kuis milikmu</p>
                     </div>
@@ -126,19 +137,19 @@ $role = $user['role'];
     <?php else: ?>
         <h2 class="fw-bold mb-4">Menu Student</h2>
 
-        <div class="row g-4">
-            <div class="col-md-6">
-                <a href="student/join_room.php">
-                    <div class="card-menu shadow-lg">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 d-flex">
+                <a href="student/join_room.php" class="w-100">
+                    <div class="card-menu shadow-lg h-100">
                         <h4 class="fw-bold">Join Kode Room</h4>
                         <p>Masukkan kode yang diberikan guru</p>
                     </div>
                 </a>
             </div>
 
-            <div class="col-md-6">
-                <a href="student/score_history.php">
-                    <div class="card-menu shadow-lg">
+            <div class="col-md-4 d-flex">
+                <a href="student/score_history.php" class="w-100">
+                    <div class="card-menu shadow-lg h-100">
                         <h4 class="fw-bold">Riwayat Nilai</h4>
                         <p>Lihat hasil kuis yang pernah kamu ikuti</p>
                     </div>
