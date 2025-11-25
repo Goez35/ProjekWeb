@@ -68,7 +68,7 @@ $role = $user['role'];
         }
 
         .navbar-logo {
-            height: 80px;             /* kecilin ukuran */
+            height: 40px;             /* kecilin ukuran */
             width: auto;
             margin-right: 12px;       /* jarak sama teks biar napas */
         }
