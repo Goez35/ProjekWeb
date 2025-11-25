@@ -34,6 +34,7 @@ $leaderboard = $list->get_result();
     <meta charset="UTF-8">
     <title>Leaderboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="teacher_style.css">
 
     <meta http-equiv="refresh" content="4"> <!-- auto refresh leaderboard -->
 </head>

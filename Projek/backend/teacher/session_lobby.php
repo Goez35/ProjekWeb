@@ -37,6 +37,7 @@ $session = $sql->fetch_assoc();
     <!-- Auto refresh setiap 3 detik -->
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="teacher_style.css">
 
     <style>
         body {
@@ -106,13 +107,6 @@ $session = $sql->fetch_assoc();
         <a href="start_game.php?session_id=<?= $session_id ?>" 
            class="btn btn-success btn-lg w-50">
             Mulai Game
-        </a>
-
-        <br><br>
-
-        <a href="close_session.php?session_id=<?= $session_id ?>" 
-           class="btn btn-danger w-25">
-            Tutup Room
         </a>
 
     </div>
