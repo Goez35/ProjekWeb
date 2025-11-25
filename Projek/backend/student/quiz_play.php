@@ -14,15 +14,15 @@ if (!isset($_SESSION['session_id'])) {
 $session_id = $_SESSION['session_id'];
 
 // ambil session info
-$session = $koneksi->prepare("SELECT * FROM quiz_sessions WHERE id = ?");
-$session->bind_param("i", $session_id);
-$session->execute();
-$session = $session->get_result()->fetch_assoc();
+$session_sql = $koneksi->prepare("SELECT * FROM quiz_sessions WHERE id = ?");
+$session_sql->bind_param("i", $session_id);
+$session_sql->execute();
+$session = $session_sql->get_result()->fetch_assoc();
 
 if (!$session) die("Sesi tidak ditemukan.");
 
-// ambil soal berdasarkan urutan
-$current_index = intval($_GET['q'] ?? 1);
+// Index soal mengikuti teacher
+$current_index = $session['current_question_index'] + 1;
 
 $q = $koneksi->prepare("SELECT * FROM questions WHERE quiz_id = ? ORDER BY id ASC");
 $q->bind_param("i", $session['quiz_id']);
@@ -89,19 +89,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $save->execute();
 
 
-    if ($current_index >= $total_questions) {
+    if ($current_index > $total_questions) {
         header("Location: finish.php?session_id=" . $session_id);
         exit;
-    } else {
-        header("Location: quiz_play.php?q=" . ($current_index + 1));
-        exit;
     }
-}
+
+    header("Location: quiz_play.php");
+    exit;
+
+    }
 ?>
 <!DOCTYPE html>
-<html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="2">
     <title>Kuis Sedang Berjalan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
