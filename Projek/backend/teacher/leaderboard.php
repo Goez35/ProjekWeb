@@ -29,9 +29,8 @@ $list->execute();
 $leaderboard = $list->get_result();
 ?>
 <?php include __DIR__ . '/../includes/header.php'; ?>
-<body class="bg-light d-flex align-items-center justify-content-center" style="min-height:100vh">
 
-<div class="card shadow p-4" style="max-width:600px; width:100%;">
+
     <h2 class="text-center mb-4">Leaderboard</h2>
 
     <table class="table table-bordered text-center">
@@ -61,7 +60,7 @@ $leaderboard = $list->get_result();
     </table>
 
     <a href="../dashboard.php" class="btn btn-primary w-100 mt-3">Kembali Dashboard</a>
-</div>
+
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
