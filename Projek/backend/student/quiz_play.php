@@ -78,26 +78,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $submission_id = $submission['id'];
 
-    // kalau teacher sudah ganti soal, refresh otomatis menangkap update
-    if ($session['status'] === 'finished') {
-        header("Location: finish.php?session_id=$session_id");
-        exit;
-    }
-
-    // kalau user sudah menjawab current question, tampilkan halaman tunggu
+    // cek apakah user sudah menjawab current question
     $check_answer = $koneksi->prepare("
-        SELECT id FROM submission_answers 
+        SELECT choice_id FROM submission_answers 
         WHERE submission_id = ? AND question_id = ?
     ");
-    $check_answer->bind_param("ii", $submission_id, $current_question['id']);
+    $check_answer->bind_param("ii", $submission['id'], $current_question['id']);
     $check_answer->execute();
-    $already_answered = $check_answer->get_result()->num_rows > 0;
+    $answered_row = $check_answer->get_result()->fetch_assoc();
 
-    if ($already_answered) {
+    $already_answered = $answered_row ? true : false;
+    $selected_choice = $answered_row['choice_id'] ?? null;
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$already_answered) {
+
+        $choice_id = $_POST['answer'] ?? 0;
+
+        // cek correct
+        $check = $koneksi->prepare("SELECT is_correct FROM choices WHERE id = ?");
+        $check->bind_param("i", $choice_id);
+        $check->execute();
+        $result = $check->get_result()->fetch_assoc();
+        $correct = ($result && $result['is_correct'] == 1) ? 1 : 0;
+
+        $points = ($correct == 1) ? $current_question['points'] : 0;
+
+        $save = $koneksi->prepare("INSERT INTO submission_answers 
+            (submission_id, question_id, choice_id, typed_answer, is_correct, points_awarded, answered_at)
+            VALUES (?, ?, ?, NULL, ?, ?, NOW())"
+        );
+        $save->bind_param("iiiii", $submission_id, $current_question['id'], $choice_id, $correct, $points);
+        $save->execute();
+
         header("Location: waiting_next_question.php");
         exit;
     }
 
+    // kalau teacher sudah selesai
+    if ($session['status'] === 'finished') {
+        header("Location: finish.php?session_id=$session_id");
+        exit;
+    }
 
     $points = ($correct == 1) ? $current_question['points'] : 0;
 
@@ -136,14 +157,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST">
         <div class="list-group mb-3">
             <?php while ($ch = $choices->fetch_assoc()): ?>
-                <label class="list-group-item">
-                    <input type="radio" name="answer" value="<?= $ch['id'] ?>" required>
+                <label class="list-group-item <?= ($already_answered && $selected_choice == $ch['id']) ? 'list-group-item-success' : '' ?>">
+                    <input type="radio" name="answer" value="<?= $ch['id'] ?>" 
+                        <?= $already_answered ? 'disabled' : '' ?>
+                        <?= ($selected_choice == $ch['id']) ? 'checked' : '' ?>>
                     <?= htmlspecialchars($ch['text']) ?>
                 </label>
             <?php endwhile; ?>
         </div>
 
-        <button class="btn btn-primary w-100">Jawab</button>
+        <button class="btn btn-primary w-100" <?= $already_answered ? 'disabled' : '' ?>>
+            <?= $already_answered ? "Menunggu Teacher..." : "Jawab" ?>
+        </button>
     </form>
 </div>
 
