@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <style>
         body {
-            background: url('backgroundquiz.png') center/cover no-repeat fixed;
+            background: url('../backgroundquiz.png') center/cover no-repeat fixed;
             background-color: #2a0055; /* fallback kalau gambar ga load */
             min-height: 100vh;
             display: flex;

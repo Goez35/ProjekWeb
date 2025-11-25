@@ -44,7 +44,7 @@ if (!isset($_SESSION['last_question_index']) || $current_index != $_SESSION['las
 
     <style>
         body {
-            background: url('backgroundquiz.png') center/cover no-repeat fixed;
+            background: url('../backgroundquiz.png') center/cover no-repeat fixed;
             background-color: #2a0055;
             min-height: 100vh;
             display: flex;
