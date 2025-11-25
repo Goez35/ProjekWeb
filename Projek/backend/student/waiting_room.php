@@ -84,7 +84,7 @@ if (!$session) {
     <p class="sub-text">Kuis: <b><?= htmlspecialchars($session['quiz_title']) ?></b></p>
     <p class="sub-text mb-2">Kode Room: <b><?= htmlspecialchars($session['join_code']) ?></b></p>
 
-    <div class="loader"></div>
+    <div class="loader" style="margin: 0 auto;"></div>
 
     <p class="sub-text mt-4">Tetap di halaman ini ya 🌟</p>
 </div>
