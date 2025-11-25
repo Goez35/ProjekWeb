@@ -80,7 +80,7 @@ $role = $user['role'];
 
 <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <div class="container-fluid">
-        <img src="logo.png" alt="logo" class="navbar-logo">
+        <img src="logoremovedbg.png" alt="logo" class="navbar-logo">
         <a class="navbar-brand">Halo, <?= htmlspecialchars($user['fullname']) ?> (<?= $role ?>)</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
