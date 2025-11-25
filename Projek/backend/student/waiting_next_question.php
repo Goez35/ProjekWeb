@@ -40,22 +40,39 @@ if (!isset($_SESSION['last_question_index']) || $current_index != $_SESSION['las
 <head>
     <meta http-equiv="refresh" content="3">
     <title>Menunggu Soal Berikutnya</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body { background:#ece6ff; font-family:Poppins; }
-        .box {
-            margin-top:100px; background:white;
-            padding:40px; border-radius:20px; text-align:center;
+        body {
+            background: url('backgroundquiz.png') center/cover no-repeat fixed;
+            background-color: #2a0055;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Poppins, sans-serif;
+            color: #fff;
         }
+
+        .waiting-card {
+            width: 600px;
+            background: rgba(60, 0, 110, 0.78);
+            border-radius: 24px;
+            padding: 45px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+            text-align: center;
+        }
+
     </style>
 </head>
 
-<body class="container">
-    <div class="box shadow">
-        <h2>Tunggu ya...</h2>
-        <p>Guru sedang menampilkan soal berikutnya</p>
-    </div>
+<body>
+
+<div class="waiting-card shadow">
+    <h2 class="fw-bold mb-3">Tunggu ya… ⏳</h2>
+    <p class="fs-5">Guru sedang menampilkan soal berikutnya</p>
+</div>
+
 </body>
 </html>

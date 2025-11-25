@@ -95,38 +95,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <style>
         body {
-            background: url('backgroundquiz.png') center/cover no-repeat;
+            background: url('backgroundquiz.png') center/cover no-repeat fixed;
+            background-color: #2a0055; /* fallback kalau gambar ga load */
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: Poppins, sans-serif;
         }
+
         .quiz-card {
-            width: 750px;
-            background: rgba(255,255,255,0.93);
-            border-radius: 22px;
-            padding: 40px;
-            backdrop-filter: blur(6px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            width: 800px;
+            background: rgba(60, 0, 110, 0.75); /* dark purple glass */
+            border-radius: 24px;
+            padding: 45px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+            color: #fff;
             animation: fadeIn .5s ease-out;
         }
+
         @keyframes fadeIn {
-            from { opacity:0; transform: translateY(10px); }
+            from { opacity:0; transform: translateY(15px); }
             to { opacity:1; transform: translateY(0); }
         }
+
         .list-group-item {
-            font-size: 1.05rem;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.12);
             border-radius: 12px !important;
-            margin-bottom: 10px;
-        }
-        button {
+            margin-bottom: 12px;
             padding: 14px;
-            border-radius: 14px;
-            font-size: 1.15rem;
-            font-weight: 600;
+            cursor: pointer;
+            transition: background .25s, transform .2s;
+        }
+
+        .list-group-item:hover {
+            background: rgba(255,255,255,0.18);
+            transform: scale(1.02);
+        }
+
+        .list-group-item input {
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 15px;
+            border-radius: 18px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background-color: #3e1737;
+            color: #dac9d7;
+            border: none;
+            transition: .25s;
+        }
+
+        button:hover {
+            background-color: #7a1e69;
+            transform: scale(1.03);
         }
     </style>
+
 </head>
 
 <body>
@@ -145,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endwhile; ?>
         </div>
 
-        <button class="btn btn-primary w-100">Jawab 🚀</button>
+        <button class="button w-100">Jawab 🚀</button>
     </form>
 </div>
 
