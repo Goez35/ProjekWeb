@@ -18,7 +18,7 @@ $role = $user['role'];
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #3b0075, #6f00b7);
+            background: url('backgroundquiz.png') center/cover no-repeat fixed;
             min-height: 100vh;
             color: white;
         }
