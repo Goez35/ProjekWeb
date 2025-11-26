@@ -171,12 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <div class="divider">atau</div>
-
-    <button class="google-btn w-100 d-flex align-items-center justify-content-center mb-3">
-        <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="22" class="me-2">
-        Masuk dengan Google
-    </button>
-
+    
     <p class="text-center mt-2">
         Belum punya akun? <a class="link" href="register.php">Daftar sekarang</a>
     </p>
