@@ -163,10 +163,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="password" name="password" class="form-control" placeholder="Masukkan password">
         </div>
 
-        <div class="text-end mb-3">
-            <a href="#" class="small link">Lupa password?</a>
-        </div>
-
         <button type="submit" class="btn btn-login text-white">Masuk</button>
     </form>
 
