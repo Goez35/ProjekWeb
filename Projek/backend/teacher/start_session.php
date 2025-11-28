@@ -37,3 +37,5 @@ $session_id = $stmt->insert_id;
 <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>
+
+//bagus jelek
